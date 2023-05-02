@@ -76,14 +76,14 @@ namespace NdGreenhouse.Apps.Greenhouse
             return bse.State == null;
         }
 
-        public static bool IsOn(this SwitchEntity se)
-        {
-            return (se?.State ?? "Unknown") == "on";
-        }
-        public static bool IsOff(this SwitchEntity se)
-        {
-            return (se?.State ?? "Unknown") == "off";
-        }
+        //public static bool IsOn(this SwitchEntity se)
+        //{
+        //    return (se?.State ?? "Unknown") == "on";
+        //}
+        //public static bool IsOff(this SwitchEntity se)
+        //{
+        //    return (se?.State ?? "Unknown") == "off";
+        //}
         public static bool IsUnknown(this SwitchEntity se)
         {
             return se.State == null;

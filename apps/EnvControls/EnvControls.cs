@@ -10,7 +10,15 @@ using HomeAssistantGenerated;
 
 namespace NdGreenhouse.Apps.Greenhouse
 {
+    public class ClimateConfig
+    {
+        public double? FanOnTemp { get; set; }
+        public double? FanOffTemp { get; set; }
+        public double? HumidityOn { get; set; }
+        public double? HumidityOff { get; set; }
+    }
 
+    [Focus]
     [NetDaemonApp]
     public class EnvironmentApp
     {
@@ -26,20 +34,26 @@ namespace NdGreenhouse.Apps.Greenhouse
         public double? HumidityOn { get; set; }
         public double? HumidityOff { get; set; }
 
-        public EnvironmentApp(IHaContext ha, ILogger<EnvironmentApp> logger, INetDaemonScheduler scheduler)
+        public EnvironmentApp(IHaContext ha, ILogger<EnvironmentApp> logger, INetDaemonScheduler scheduler, IAppConfig<ClimateConfig> config)
         {
+            FanOnTemp = config?.Value?.FanOnTemp;
+            FanOffTemp = config?.Value?.FanOffTemp;
+            HumidityOn = config?.Value?.HumidityOn;
+            HumidityOff = config?.Value?.HumidityOff;
             _logger = logger;
             haContext = ha;
             _ghConfig = new GhConfig(ha, logger);
             _ghMain = _ghConfig.GhMain();
+
             if (FanOnTemp < FanOffTemp)
             {
                 _logger.LogError($"Fan Off Temp must be lower then Fan On Temp. Fan on temp is {FanOnTemp}. Fan Off temp is {FanOffTemp}");
                 _ghProcedures.SendAlert("Environmental Controls", $"Fan Off Temp must be lower then Fan On Temp. Fan on temp is {FanOnTemp}. Fan Off temp is {FanOffTemp}");
             }
             _logger.LogInformation("EnvControls is Starting");
-            scheduler.RunEvery(TimeSpan.FromMinutes(5), () =>
+            scheduler.RunEvery(TimeSpan.FromMinutes(1), () =>
             {
+                _ghMain = _ghConfig.GhMain();
                 if (_ghMain.InternalTemp > FanOnTemp)
                 {
                     if (_ghMain.MainFan.IsOff())
@@ -62,6 +76,7 @@ namespace NdGreenhouse.Apps.Greenhouse
                         _ghMain.MainFan.TurnOff();
                     }
                 }
+                _logger.LogInformation($"External Temp is {_ghMain.ExternalTemp} and Internal temp is {_ghMain.InternalTemp} and the Swamp cooler off Temp is {FanOffTemp + 5} and the Swamp cooler isOn is {_ghMain.SwampCooler.IsOn()}");
                 if (_ghMain.ExternalTemp < _ghMain.InternalTemp && _ghMain.InternalTemp < FanOffTemp + 5 && _ghMain.SwampCooler.IsOn())
                 {
                     _logger.LogInformation($"Temp is {_ghMain.InternalTemp} -  Turning off the swamp cooler");

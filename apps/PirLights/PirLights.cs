@@ -11,7 +11,14 @@ using HomeAssistantGenerated;
 
 namespace NdGreenhouse.Apps.Greenhouse
 {
-    
+
+    public class LightConfig
+    {
+        public double? SunElevation { get; set; }
+        public int LeaveLightsOnForSeconds { get; set; }
+    }
+
+    [Focus]
     [NetDaemonApp]
     public class PirLightsApp : IDisposable
     {
@@ -19,14 +26,22 @@ namespace NdGreenhouse.Apps.Greenhouse
         private ILogger<PirLightsApp> _logger { get; set; } = default!;
 
         public double? SunElevation { get; set; }
-        public IList<SwitchEntity>? Lights { get; init; }
-        public IList<SensorEntity>? PirSensors { get; set; }
+        public List<SwitchEntity> Lights { get; set; } = new();
+        public List<BinarySensorEntity> PirSensors { get; set; } = new();
         public int LeaveLightsOnForSeconds { get; set; }
 
-        public PirLightsApp(IHaContext ha, ILogger<PirLightsApp> logger)
+        public PirLightsApp(IHaContext ha, ILogger<PirLightsApp> logger, IAppConfig<LightConfig> config)
         {
             haContext = ha;
             _logger = logger;
+            SunElevation = config?.Value?.SunElevation;
+            LeaveLightsOnForSeconds = config?.Value?.LeaveLightsOnForSeconds ?? 600;
+            Lights = new List<SwitchEntity>();
+            SwitchEntities sw = new SwitchEntities(ha);
+            BinarySensorEntities bse = new BinarySensorEntities(ha);
+            Lights.Add(sw.GhFrontLightSwitch);
+            Lights.Add(sw.GhBackLight);
+            PirSensors.Add(bse.Espcam01Pir);
 
             _logger.LogInformation("Pir App Initializing");
             SunEntities sunEntities = new SunEntities(haContext);
@@ -101,7 +116,7 @@ namespace NdGreenhouse.Apps.Greenhouse
 
         public void Dispose()
         {
-         
+
         }
     }
 

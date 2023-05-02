@@ -14,7 +14,6 @@ namespace NdGreenhouse.Apps.Greenhouse
 {
     
 
-    [Focus]
     [NetDaemonApp]
     public class RefillApp : IDisposable
     {

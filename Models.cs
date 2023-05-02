@@ -185,7 +185,7 @@ namespace NdGreenhouse
             gHMain.FreshWaterPump = sw.Tb4p4;
             gHMain.SecondsFromLowToMediumOnTestingZone = 8.68M;
             gHMain.Dehumidfier = sw.Tb4p2;
-            gHMain.SwampCooler = sw.Tb4p3;
+            gHMain.SwampCooler = sw.St4p3;
             gHMain.NutrientPump1Name = "peristalticnutrients_nutrientpump1";
             gHMain.NutrientPump2Name = "peristalticnutrients_nutrientpump2";
             gHMain.NutrientPump3Name = "peristalticnutrients_nutrientpump3";
