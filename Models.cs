@@ -182,7 +182,7 @@ namespace NdGreenhouse
             gHMain.TestingZoneLow = bse.TnResEmpty;
             gHMain.TestingZoneMedium = bse.TnResMedium;
             gHMain.TestingZoneHigh = bse.TnResFull;
-            gHMain.FreshWaterPump = sw.Tb4p4;
+            gHMain.FreshWaterPump = sw.Tb2p4; 
             gHMain.SecondsFromLowToMediumOnTestingZone = 8.68M;
             gHMain.Dehumidfier = sw.Tb4p2;
             gHMain.SwampCooler = sw.St4p3;
@@ -246,9 +246,9 @@ namespace NdGreenhouse
             }
             if (ise.ReservoirRes.State == "DB3")
             {
-                CurrentZone.LowWater = bse.Db3ResEmpty;
-                CurrentZone.MediumWater = bse.Db3ResMedium;
-                CurrentZone.HighWater = bse.Db3ResFull;
+                CurrentZone.LowWater = bse.Db5ResEmpty;
+                CurrentZone.MediumWater = bse.Db5ResMedium;
+                CurrentZone.HighWater = bse.Db5ResFull;
                 CurrentZone.WateringPump = sw.St3p2;
                 CurrentZone.SelectorName = "DB3";
                 CurrentZone.TestingPump = sw.St3p4;
@@ -272,12 +272,12 @@ namespace NdGreenhouse
             }
             if (ise.ReservoirRes.State == "DB5")
             {
-                CurrentZone.LowWater = bse.Db5ResEmpty;
-                CurrentZone.MediumWater = bse.Db5ResMedium;
-                CurrentZone.HighWater = bse.Db5ResFull;
+                CurrentZone.LowWater = bse.Db3ResEmpty;
+                CurrentZone.MediumWater = bse.Db3ResMedium;
+                CurrentZone.HighWater = bse.Db3ResFull;
                 CurrentZone.WateringPump = sw.St1p1;
                 CurrentZone.SelectorName = "DB5";
-                CurrentZone.TestingPump = sw.St1p2;
+                CurrentZone.TestingPump = sw.PowerStrip1Outlet3;
                 CurrentZone.SecondsFromLowToMediumOnTestingZone = 11.08M;
                 CurrentZone.SecondsFromHighToMediumOnBucket = 45.45M;
                 CurrentZone.NutrientMix = NutrientMixes.BloomingAndRipening;
@@ -290,7 +290,7 @@ namespace NdGreenhouse
                 CurrentZone.HighWater = bse.Db6ResFull;
                 CurrentZone.WateringPump = sw.St1p3;
                 CurrentZone.SelectorName = "DB6";
-                CurrentZone.TestingPump = sw.St1p4;
+                CurrentZone.TestingPump = sw.PowerStripMidOutlet3;
                 CurrentZone.SecondsFromHighToMediumOnBucket = 51.656M;
                 CurrentZone.SecondsFromLowToMediumOnTestingZone = 12.465M;
                 CurrentZone.NutrientMix = NutrientMixes.BloomingAndRipening;

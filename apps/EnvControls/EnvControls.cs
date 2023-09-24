@@ -18,7 +18,6 @@ namespace NdGreenhouse.Apps.Greenhouse
         public double? HumidityOff { get; set; }
     }
 
-    [Focus]
     [NetDaemonApp]
     public class EnvironmentApp
     {

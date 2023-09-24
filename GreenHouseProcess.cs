@@ -704,10 +704,10 @@ namespace NdGreenhouse.Apps.Greenhouse
                         if (zone.MediumWater.IsOff())
                         {
                             zone.TestingPump.TurnOn();
-                            var currentRun = await _ghMain.TestingZoneLow.StateChanges().Where(t => t.New.IsOn()).FirstOrTimeoutAsync(TimeSpan.FromSeconds(30));
+                            var currentRun = await _ghMain.TestingZoneLow.StateChanges().Where(t => t.New.IsOn()).FirstOrTimeoutAsync(TimeSpan.FromSeconds(45));
 
                             zone.TestingPump.TurnOff();
-                            if (currentRun.New == null)
+                            if (currentRun?.New == null)
                             {
                                 logger.LogDebug("Test Zone Sensor is not working or we could not get water into the testing zone");
                             }
@@ -731,11 +731,11 @@ namespace NdGreenhouse.Apps.Greenhouse
                             //handling the timing part of filling
                             DateTime startOfRun = DateTime.Now;
                             zone.TestingPump.TurnOn();
-                            var timingRun = await zone.MediumWater.StateChanges().Where(t => t.New.IsOff()).Merge(_ghMain.TestingZoneHigh.StateChanges().Where(t => t.New.IsOn()).FirstOrTimeout(TimeSpan.FromSeconds(60)));
+                            var timingRun = await zone.MediumWater.StateChanges().Where(t => t.New.IsOff()).Merge(_ghMain.TestingZoneHigh.StateChanges().Where(t => t.New.IsOn())).FirstOrTimeoutAsync(TimeSpan.FromSeconds(60));
                             if (_ghMain.TestingZoneLow.IsOff())
                             {
                                 //This is to make sure that there is enough time to get the siphon started.
-                                await Task.Delay(TimeSpan.FromSeconds(10));
+                                await Task.Delay(TimeSpan.FromSeconds(15));
                             }
                             zone.TestingPump.TurnOff();
                             int seconds = (int)(DateTime.Now - startOfRun).TotalSeconds;
@@ -787,7 +787,6 @@ namespace NdGreenhouse.Apps.Greenhouse
         private async Task<bool> SafelyAddFreshWater(int secondsToRun)
         {
             DateTime startTime = DateTime.Now;
-            var tcs = new TaskCompletionSource<bool>();
             if (_ghMain.TestingZoneHigh != null &&
             _ghMain.FreshWaterPump != null)
             {
@@ -796,15 +795,15 @@ namespace NdGreenhouse.Apps.Greenhouse
                     _ghMain.FreshWaterPump.TurnOn();
                     var fillResult = await _ghMain.TestingZoneHigh.StateChanges().Where(t => t.New.IsOn()).FirstOrTimeoutAsync(TimeSpan.FromSeconds(secondsToRun));
                     _ghMain.FreshWaterPump.TurnOff();
-                    if (fillResult.New == null)
+                    if (fillResult?.New == null)
                     {
-                        TimeSpan remainingTime = DateTime.Now - startTime;
-                        if (remainingTime.TotalSeconds > 1)
+                        TimeSpan currentlyRunningTime = DateTime.Now - startTime;
+                        if ((secondsToRun - currentlyRunningTime.TotalSeconds) > 1)
                         {
                             //this is to let the water drain down;
                             await Task.Delay(TimeSpan.FromSeconds(10));
 
-                            int secondsForNewRun = (int)remainingTime.TotalSeconds;
+                            int secondsForNewRun = secondsToRun - (int)currentlyRunningTime.TotalSeconds;
                             if (secondsToRun > 1)
                             {
                                 logger.LogDebug($"Adding more water for {secondsForNewRun} second");
@@ -812,17 +811,14 @@ namespace NdGreenhouse.Apps.Greenhouse
                             }
                         }
                     }
-                    tcs.SetResult(true);
 
                 }
                 catch (Exception ex)
                 {
                     logger.LogInformation($"Fill fresh Water safely had an exception of {ex.Message}");
                     _ghMain.FreshWaterPump.TurnOff();
-                    tcs.SetResult(true);
                 }
             }
-            await tcs.Task;
             return true;
 
 

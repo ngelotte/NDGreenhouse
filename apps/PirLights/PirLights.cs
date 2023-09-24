@@ -18,7 +18,6 @@ namespace NdGreenhouse.Apps.Greenhouse
         public int LeaveLightsOnForSeconds { get; set; }
     }
 
-    [Focus]
     [NetDaemonApp]
     public class PirLightsApp : IDisposable
     {
