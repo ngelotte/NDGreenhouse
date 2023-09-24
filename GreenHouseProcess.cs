@@ -245,11 +245,12 @@ namespace NdGreenhouse.Apps.Greenhouse
                 {
                     using EnsurePumpTurnsOff pump = new EnsurePumpTurnsOff(pumpOrValve);
                     pump.TurnOn();
-                    var result = await tankFullSensor.StateChanges().Where(t => t.New.IsOn()).FirstOrTimeoutAsync(timeSpan);
+                    TimeSpan stabalizationTime = TimeSpan.FromSeconds(4);
+                    var result = await tankFullSensor.StateChanges().Throttle(stabalizationTime).Where(t => t.New.IsOn()).FirstOrTimeoutAsync(timeSpan);
                     pump.TurnOff();
-                    if (result.New == null)
+                    if (result?.New == null)
                     {
-                        SendAlert("Timeout refilling the Main Water tank", "Tank is probably not full but it took over 4 minutes to fill it up.");
+                        SendAlert("Timeout refilling the Main Water tank", $"Tank is probably not full but it took over {timeSpan.Minutes}:{timeSpan.Seconds} to fill it up.");
                     }
                 }
             }

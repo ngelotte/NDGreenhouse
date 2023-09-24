@@ -199,9 +199,9 @@ namespace NdGreenhouse
             gHMain.ExternalHumiditySensors.Add(se.ExteriorHumidity);
             gHMain.MainFan = sw.Fan;
             gHMain.WaterTankRefill = sw.PowerstripneOutlet3;
-            gHMain.LowFreshWaterTank = bse.FreshWaterEmpty;
-            gHMain.MediumFreshWaterTank = bse.FreshWaterMedium;
-            gHMain.HighFreshWaterTank = bse.FreshWaterFull;
+            gHMain.LowFreshWaterTank = bse.FreshResEmpty;
+            gHMain.MediumFreshWaterTank = bse.FreshResMedium;
+            gHMain.HighFreshWaterTank = bse.FreshResFull;
             gHMain.LowSwampCoolerTank = bse.SwpResEmpty;
             gHMain.MediumSwampCoolerTank = bse.SwpResMedium;
             gHMain.HighSwampCoolerTank = bse.SwpResFull;

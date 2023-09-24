@@ -12,8 +12,8 @@ using NetDaemon.HassModel.Integration;
 // conflicting names
 namespace NdGreenhouse.Apps.Greenhouse
 {
-    
 
+    [Focus]
     [NetDaemonApp]
     public class RefillApp : IDisposable
     {
