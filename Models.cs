@@ -8,7 +8,6 @@ namespace NdGreenhouse
 
     public class GHMain
     {
-        public ClimateEntity? HomeThemostat { get; set; }
         public SwitchEntity TestingTankHeater { get; set; } = default!;
         public NumericSensorEntity TestingTankTemp { get; set; } = default!;
         public BinarySensorEntity? TestingZoneLow { get; set; }
@@ -176,7 +175,6 @@ namespace NdGreenhouse
         {
             BinarySensorEntities bse = new(_app);
             SwitchEntities sw = new(_app);
-            ClimateEntities ce = new(_app);
             SensorEntities se = new(_app);
             GHMain gHMain = new GHMain();
             gHMain.TestingZoneLow = bse.TnResEmpty;
@@ -184,18 +182,16 @@ namespace NdGreenhouse
             gHMain.TestingZoneHigh = bse.TnResFull;
             gHMain.FreshWaterPump = sw.Tb2p4; 
             gHMain.SecondsFromLowToMediumOnTestingZone = 8.68M;
-            gHMain.Dehumidfier = sw.Tb4p2;
+            gHMain.Dehumidfier = sw.PowerStripTestZoneOutlet2;
             gHMain.SwampCooler = sw.St4p3;
             gHMain.NutrientPump1Name = "peristalticnutrients_nutrientpump1";
             gHMain.NutrientPump2Name = "peristalticnutrients_nutrientpump2";
             gHMain.NutrientPump3Name = "peristalticnutrients_nutrientpump3";
-            gHMain.InternalTempSensors.Add(se.BleTemperatureGhIndoorTemp);
+            gHMain.InternalTempSensors.Add(se.GoveeIndoorTempTemperature);
             gHMain.InternalTempSensors.Add(se.GhInteralProtectedTemp);
             gHMain.ExternalTempSensors.Add(se.ExteriorTemperature);
-            gHMain.ExternalTempSensors.Add(se.BleTemperatureGhTempExternal);
-            gHMain.InternalHumidtySensors.Add(se.BleHumidityGhIndoorTemp);
+            gHMain.InternalHumidtySensors.Add(se.GoveeIndoorTempHumidity);
             gHMain.InternalHumidtySensors.Add(se.GhInteralProtectedHumidity);
-            gHMain.ExternalHumiditySensors.Add(se.BleHumidityGhExternal);
             gHMain.ExternalHumiditySensors.Add(se.ExteriorHumidity);
             gHMain.MainFan = sw.Fan;
             gHMain.WaterTankRefill = sw.PowerstripneOutlet3;
@@ -207,7 +203,6 @@ namespace NdGreenhouse
             gHMain.HighSwampCoolerTank = bse.SwpResFull;
             gHMain.DumpToWastePump = sw.Tbp1;
             gHMain.HomeDamper = sw.PowerStrip1Outlet4;
-            gHMain.HomeThemostat = ce.Home;
             gHMain.TestingTankHeater = sw.PowerStripTestZoneOutlet1;
             gHMain.TestingTankTemp = se.WaterTemperature;
             return gHMain;

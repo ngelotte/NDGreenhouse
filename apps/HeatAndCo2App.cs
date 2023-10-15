@@ -40,7 +40,7 @@ namespace NdGreenhouse.Apps.Greenhouse
         {
             _logger.LogInformation("Starting the HeatAndCo2 App");
             GhProcedures procedures = new GhProcedures(haContext, _logger);
-            await procedures.OpenHVACToGreenhouse();
+            //await procedures.OpenHVACToGreenhouse();
         }
 
         public Task InitializeAsync(CancellationToken cancellationToken)

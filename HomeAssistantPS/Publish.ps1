@@ -15,6 +15,6 @@ New-HomeAssistantSession -ip  $ip -port $port -token $token
 Invoke-HomeAssistantService -service HASSIO.ADDON_STOP -json $json
 
 Remove-Item -Recurse -Force \\homeassistant.local\config\netdaemon3\*
-dotnet publish -c Release NDGreenhouse.csproj -o \\homeassistant.local\config\netdaemon3
+dotnet publish -c Release ..\NDGreenhouse.csproj -o \\homeassistant.local\config\netdaemon3
 
 Invoke-HomeAssistantService -service HASSIO.ADDON_START -json $json

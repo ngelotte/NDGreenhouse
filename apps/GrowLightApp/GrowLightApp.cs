@@ -8,7 +8,16 @@ using HomeAssistantGenerated;
 
 namespace NdGreenhouse.Apps.Greenhouse
 {
-   
+
+    public class GrowLightConfig
+    {
+        public double? ElevationEvening { get; set; }
+        public double? ElevationMorning { get; set; }
+        public string NightEndTime { get; set; } = "";
+        public string MorningStartTime { get; set; } = "";
+        public IList<SwitchEntity>? GrowLights { get; set; }
+    }
+
     [NetDaemonApp]
     public class GrowLightApp : IDisposable
     {
@@ -20,8 +29,14 @@ namespace NdGreenhouse.Apps.Greenhouse
         public string NightEndTime { get; set; } = "";
         public string MorningStartTime { get; set; } = "";
         public IList<SwitchEntity>? GrowLights { get; set; }
-        public GrowLightApp(IHaContext ha, ILogger<GrowLightApp> logger, INetDaemonScheduler scheduler)
+        public GrowLightApp(IHaContext ha, ILogger<GrowLightApp> logger, INetDaemonScheduler scheduler, IAppConfig<GrowLightConfig> config)
         {
+            ElevationEvening = config?.Value?.ElevationEvening;
+            ElevationMorning = config?.Value?.ElevationMorning;
+            NightEndTime = config?.Value?.NightEndTime ?? "";
+            MorningStartTime = config?.Value?.MorningStartTime ?? "";
+            GrowLights = config?.Value?.GrowLights;
+
             _logger = logger;
             _haContext = ha;
             _scheduler = scheduler;
@@ -59,15 +74,13 @@ namespace NdGreenhouse.Apps.Greenhouse
             if (NightEndTime != null && GrowLights != null)
             {
                 //I have absolutely no idea if this parses correctly. 
-                DateTimeOffset firstTimeToStart = DateTimeOffset.Parse(NightEndTime);
-                _scheduler.RunDaily(TimeSpan.Parse(MorningStartTime), () =>
+                //DateTimeOffset firstTimeToStart = DateTimeOffset.Parse(NightEndTime);
+                _scheduler.RunDaily(TimeSpan.Parse(NightEndTime), () =>
                                 {
                                     GrowLights.TurnOff();
                                     _logger.LogInformation($"Turning off the Lights at {DateTime.Now}");
                                 });
             }
-
-
         }
 
         private void InitTurnOnLightsInTheMorning()
@@ -76,6 +89,10 @@ namespace NdGreenhouse.Apps.Greenhouse
             if (MorningStartTime != null && ElevationMorning != null && GrowLights != null)
             {//I have absolutely no idea if this parses correctly. 
                 DateTimeOffset firstTimeToStart = DateTimeOffset.Parse(MorningStartTime);
+                if (firstTimeToStart < DateTimeOffset.Now)
+                {
+                    firstTimeToStart = firstTimeToStart.AddDays(1);
+                }
                 _scheduler.RunEvery(TimeSpan.FromHours(24), firstTimeToStart, () =>
                    {
                        if (sunEntities != null && sunEntities?.Sun?.Attributes != null)
@@ -90,17 +107,13 @@ namespace NdGreenhouse.Apps.Greenhouse
                            {
                                _logger.LogInformation($"Skipping turning on the Lights because the sun is at  {sunEntities.Sun.Attributes.Elevation} but it needs to be below {ElevationMorning}");
                            }
-
                        }
                        else
                        {
                            _logger.LogInformation($"Sun attributes is null. So not turning on the lights because we dont know where the sun is.");
                        }
-
                    }
            );
-
-
             }
             //
             if (MorningStartTime != null && ElevationMorning != null && GrowLights != null)
@@ -117,11 +130,8 @@ namespace NdGreenhouse.Apps.Greenhouse
                                 GrowLights.TurnOff();
                                 _logger.LogInformation($"Turning off the Lights at {DateTime.Now}");
                             }
-
                         );
             }
-
-
         }
 
         public void Dispose()

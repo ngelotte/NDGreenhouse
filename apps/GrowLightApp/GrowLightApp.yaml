@@ -1,9 +1,8 @@
-growlight_app:
-  class: Greenhouse.GrowLightApp
-  elevation_evening: 5.0
-  elevation_morning: 5.0
-  night_end_time: "20:00:00"
-  morning_start_time: "06:00:00"
+NdGreenhouse.Apps.Greenhouse.GrowLightConfig:
+  elevationevening: 5.0
+  elevationmorning: 5.0
+  nightendtime: "20:00:00"
+  morningstarttime: "06:00:00"
   growLights: 
     - switch.power_strip_1_outlet_1
     - switch.st4p4
