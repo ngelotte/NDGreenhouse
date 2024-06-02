@@ -9,7 +9,6 @@ namespace NdGreenhouse.Apps.Greenhouse
 {
 
     [NetDaemonApp]
-    [Focus]
     internal class HeatAndCo2App : IDisposable, IAsyncInitializable
     {
         private IHaContext haContext { get; set; } = default!;
