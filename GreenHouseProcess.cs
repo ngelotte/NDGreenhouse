@@ -160,6 +160,15 @@ namespace NdGreenhouse.Apps.Greenhouse
             return true;
         }
 
+        public double GetInternalTemp()
+        {
+            if (_ghMain != null && _ghMain.InternalTemp != null)
+            {
+                return _ghMain.InternalTemp ?? 0;
+            }
+            return 0;
+        }
+
         public async Task<bool> RunOneTankEmptyRunForCurrentZone()
         {
             GhZone zone = _ghConfig.CurrentZone();

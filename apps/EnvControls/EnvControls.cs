@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using NetDaemon.Extensions.Scheduler;
 using NetDaemon.HassModel.Entities;
 using HomeAssistantGenerated;
+using System.Diagnostics;
 
 namespace NdGreenhouse.Apps.Greenhouse
 {
@@ -19,6 +20,7 @@ namespace NdGreenhouse.Apps.Greenhouse
     }
 
     [NetDaemonApp]
+    //[Focus]
     public class EnvironmentApp
     {
         private IHaContext haContext { get; set; } = default!;
@@ -50,7 +52,8 @@ namespace NdGreenhouse.Apps.Greenhouse
                 _ghProcedures.SendAlert("Environmental Controls", $"Fan Off Temp must be lower then Fan On Temp. Fan on temp is {FanOnTemp}. Fan Off temp is {FanOffTemp}");
             }
             _logger.LogInformation("EnvControls is Starting");
-            scheduler.RunEvery(TimeSpan.FromMinutes(1), () =>
+            TimeSpan runEveryTimespan = Debugger.IsAttached ? TimeSpan.FromMinutes(1) : TimeSpan.FromMinutes(5);
+            scheduler.RunEvery(runEveryTimespan, DateTime.UtcNow, () =>
             {
                 _ghMain = _ghConfig.GhMain();
                 if (_ghMain.InternalTemp > FanOnTemp)

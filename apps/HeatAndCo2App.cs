@@ -7,8 +7,9 @@ using HomeAssistantGenerated;
 
 namespace NdGreenhouse.Apps.Greenhouse
 {
-   
+
     [NetDaemonApp]
+    [Focus]
     internal class HeatAndCo2App : IDisposable, IAsyncInitializable
     {
         private IHaContext haContext { get; set; } = default!;
@@ -36,16 +37,13 @@ namespace NdGreenhouse.Apps.Greenhouse
 
             }
         }
-        public async Task InitializeAsync()
+        public async Task InitializeAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting the HeatAndCo2 App");
             GhProcedures procedures = new GhProcedures(haContext, _logger);
             //await procedures.OpenHVACToGreenhouse();
-        }
-
-        public Task InitializeAsync(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
+            _logger.LogInformation($"Heat and Co2 app is not really a thing. But the internal temp is {procedures.GetInternalTemp()}");
+           
         }
     }
 

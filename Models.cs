@@ -44,7 +44,11 @@ namespace NdGreenhouse
 
                 foreach (var sensor in InternalTempSensors)
                 {
-                    return sensor.State;
+                    if(sensor.State != null)
+                    {
+                        return sensor.State;
+                    }
+                   
                 }
                 return null;
 
@@ -189,6 +193,7 @@ namespace NdGreenhouse
             gHMain.NutrientPump3Name = "peristalticnutrients_nutrientpump3";
             gHMain.InternalTempSensors.Add(se.GoveeIndoorTempTemperature);
             gHMain.InternalTempSensors.Add(se.GhInteralProtectedTemp);
+            gHMain.InternalTempSensors.Add(se.WaterTemperature);
             gHMain.ExternalTempSensors.Add(se.ExteriorTemperature);
             gHMain.InternalHumidtySensors.Add(se.GoveeIndoorTempHumidity);
             gHMain.InternalHumidtySensors.Add(se.GhInteralProtectedHumidity);
